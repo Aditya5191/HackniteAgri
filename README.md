@@ -1,13 +1,18 @@
-# Bot Detection Model
+# Crop Disease Management
 
-This project is a web application for training and predicting bot detection using various machine learning models. The frontend is built with React, and the backend is built with Flask. The application allows users to upload a CSV file for training the model and then use the trained model to predict whether a user is a bot or not.
+This project is a web application for detecting crop diseases using machine learning models. The frontend is built with React, and the backend is built with Flask. The application allows users to upload an image of a crop, select the crop type (e.g., Rice, Wheat, Corn), and receive predictions about the disease affecting the crop, along with recommendations for treatment.
 
 ## Table of Contents
 
 - [Installation](#installation)
+- [Features](#features)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Errors](#errors)
+- [Folder Structure](#folder-structure)
+- [Demo](#demo)
+
+---
 
 ## Installation
 
@@ -22,10 +27,6 @@ This project is a web application for training and predicting bot detection usin
 1. Clone the repository:
     ```sh
     git clone https://github.com/AmeyaMprojects/IITK_HACK_2
-    
-    ```
-    go to the backend folder
-    ```sh
     cd IITK_HACK_2/backend
     ```
 
@@ -34,14 +35,19 @@ This project is a web application for training and predicting bot detection usin
     pip install -r requirements.txt
     ```
 
-3. Run the Flask application:
+3. Place the TensorFlow Lite models (`rice.tflite`, `wheat.tflite`, etc.) in the `backend/crop_disease_models/` directory.
+
+4. Run the Flask application:
     ```sh
     python app.py
     ```
 
 ### Frontend Setup
 
-1. Go to the root directory of the project IN A NEW TERNIMAL:
+1. In a new terminal, navigate to the root directory of the project:
+    ```sh
+    cd IITK_HACK_2/frontend
+    ```
 
 2. Install the required npm packages:
     ```sh
@@ -53,31 +59,44 @@ This project is a web application for training and predicting bot detection usin
     npm run dev
     ```
 
+---
+
+## Features
+
+- **Image Upload**: Users can upload an image of a crop leaf.
+- **Crop Type Selection**: Users can select the crop type (e.g., Rice, Wheat, Corn).
+- **Disease Detection**: The backend uses TensorFlow Lite models to predict the disease affecting the crop.
+- **Recommendations**: Based on the detected disease, the application provides actionable recommendations for treatment.
+- **Dynamic Model Loading**: The backend dynamically loads the appropriate TensorFlow Lite model based on the selected crop type.
+
+---
+
 ## Usage
 
-1. Open your browser and navigate to [http://localhost:80](http://localhost:80).
-2. Upload a CSV file containing the training data. The CSV file should contain the following columns: [default_profile](http://_vscodecontentref_/1), [default_profile_image](http://_vscodecontentref_/2), [favourites_count](http://_vscodecontentref_/3), [followers_count](http://_vscodecontentref_/4), [friends_count](http://_vscodecontentref_/5), [screen_name](http://_vscodecontentref_/6), [statuses_count](http://_vscodecontentref_/7), [verified](http://_vscodecontentref_/8), [geo_enabled](http://_vscodecontentref_/9), [average_tweets_per_day](http://_vscodecontentref_/10), [account_age_days](http://_vscodecontentref_/11). The CSV file that we used is given in the zip file.
-3. Click on the "Train Model" button to train the model.
-4. After the model is trained, enter user information to predict whether the user is a bot or not.
+1. Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+2. Select the crop type (e.g., Rice, Wheat, Corn) from the dropdown menu.
+3. Upload an image of the crop leaf.
+4. Click the "Analyze Image" button to detect the disease.
+5. View the results, including:
+   - The detected disease.
+   - Confidence score.
+   - Treatment recommendations.
+
+---
 
 ## API Endpoints
 
-### /train (POST)
+### `/analyze` (POST)
 
-- **Description**: Train the model with the uploaded CSV file.
-- **Request**: Multipart form data with a CSV file.
-- **Response**: JSON object containing the training results and performance metrics.
-
-### /predict (POST)
-
-- **Description**: Predict whether a user is a bot or not using the trained model.
-- **Request**: JSON object containing user information.
-- **Response**: JSON object containing the prediction result.
-
-## Errors
-
-- If facing any errors related to network or CORS, please check if the backend server is running.
-
-## Demo
-
-For a demonstration of the application, please watch the [demo video](https://drive.google.com/file/d/135WSNdyu9c8c-GlQcdFGNI4Ok_FwofpG/view?usp=sharing).
+- **Description**: Analyze an uploaded image to detect crop diseases.
+- **Request**:
+  - Multipart form data containing:
+    - `file`: The uploaded image file.
+    - `cropType`: The selected crop type (e.g., Rice, Wheat, Corn).
+- **Response**: JSON object containing:
+  ```json
+  {
+    "disease": "Bacterial_leaf_blight",
+    "confidence": 92.5,
+    "recommendation": "Apply copper-based fungicides and ensure proper drainage."
+  }
