@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+  --primary-green: #4CAF50;
+  --secondary-green: #388E3C;
+  --earth-brown: #8D6E63;
+  --sky-blue: #87CEEB;
+  --sun-yellow: #FFD700;
+  --white: #ffffff;
+  --black-translucent: rgba(0, 0, 0, 0.7);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: url('/waves.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--white);
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: left;
+  justify-content: center;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Smooth gradient animation */
+@keyframes backgroundFade {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Container Styling */
+.container {
+  width: 900px;
+  max-width: 90%;
+  padding: 30px;
+  background: var(--black-translucent);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+  margin: 20px auto;
+  border: 2px solid var(--primary-green);
+}
+
+/* Smooth Fade-in Animation */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Buttons */
+button, .file-label, .back-button {
+  padding: 12px 24px;
+  background: var(--primary-green);
+  border: 2px solid var(--secondary-green);
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--white);
+  box-shadow: 0 0 10px var(--secondary-green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  margin: 10px 20px;
+}
+/* Header Styling */
+.header {
+  background-color: #282c34;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.header-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  white-space: nowrap;
+}
+/* Logo Styling */
+.logo {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Keep aspect ratio */
+  margin-right: auto; /* Space between logo and links */
+  margin-left: 0%;
+}
+
+/* Header Wrapper with Logo */
+.header-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: auto; /* Center-align nav links */
+  align-items: center;
+}
+
+/* Add Flexbox Alignment for Logo and Nav Links */
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.nav-link:hover {
+  color: #3091ff; /* Yellow highlight on hover */
+  text-decoration: underline;
+}
+
+button:hover, .file-label:hover, .back-button:hover {
+  background: var(--secondary-green);
+  box-shadow: 0 0 15px var(--sun-yellow);
+  transform: translateY(-2px);
+}
+
+button:active, .file-label:active, .back-button:active {
+  transform: translateY(0);
+  box-shadow: 0 0 10px var(--earth-brown);
+}
+
+/* Hide the default file input */
+input[type="file"] {
+  display: none;
+}
+
+/* File name display */
+.file-name {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Form Inputs */
+input, select {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 2px solid var(--primary-green);
+  width: 100%;
+  max-width: 300px;
+  margin: 10px auto;
+  display: block;
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--earth-brown);
+  text-align: center;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+/* File Upload Button */
+.file-label {
+  padding: 10px 20px;
+  background: var(--primary-green);
+  border: 2px solid var(--secondary-green);
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.file-label:hover {
+  background: var(--secondary-green);
+}
+
+/* Analysis Results */
+.analysis-results {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.analysis-results p {
+  margin: 10px 0;
+  color: #ffffff;
+}
+/* Dropdown Menu */
+/* Dropdown Menu */
+select {
+  padding: 12px; /* Slightly increased padding for better spacing */
+  font-size: 16px;
+  border-radius: 5px;
+  border: 2px solid var(--primary-green); /* Green border for consistency */
+  background: black; /* Background color set to black */
+  color: white; /* Text color set to white */
+  width: 100%; /* Full width for better alignment */
+  max-width: 300px; /* Limit width for smaller screens */
+  margin: 10px auto; /* Center alignment */
+  display: block; /* Ensures consistent layout */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: all 0.3s ease; /* Smooth transitions */
+}
+
+select:hover {
+  background: rgba(0, 0, 0, 0.8); /* Slightly lighter black on hover */
+  border-color: var(--secondary-green); /* Highlight border on hover */
+}
+
+/* Error Message */
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 20px;
+  }
+  button {
+    font-size: 14px;
+  }
+  input, select {
+    font-size: 14px;
+  }
+}
