@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import Header from "./Header"; // Import the reusable Header component
+import Header from "./Header";
 
 const SatelliteData = () => {
-  const [coords, setCoords] = useState(""); // State for user-provided coordinates
-  const [startDate, setStartDate] = useState("2023-01-01"); // Default start date
-  const [endDate, setEndDate] = useState("2023-10-01"); // Default end date
-  const [recommendations, setRecommendations] = useState([]); // Recommendations from backend
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [coords, setCoords] = useState("");
+  const [startDate, setStartDate] = useState("2023-01-01");
+  const [endDate, setEndDate] = useState("2023-10-01");
+  const [ndviPlot, setNdviPlot] = useState(""); // Base64 image of NDVI plot
+  const [futureAnomalies, setFutureAnomalies] = useState([]); // Future anomaly dates
+  const [recommendations, setRecommendations] = useState([]); // Recommendations
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -28,7 +29,11 @@ const SatelliteData = () => {
       }
 
       const data = await response.json();
-      setRecommendations(data.recommendations);
+      console.log("API Response:", data); // Debug log
+
+      setNdviPlot(data.ndvi_plot || ""); // Base64 image of NDVI plot
+      setFutureAnomalies(data.future_anomalies || []); // Future anomaly dates
+      setRecommendations(data.recommendations || []); // Recommendations
     } catch (err) {
       setError(err.message || "An error occurred while analyzing satellite data.");
     } finally {
@@ -38,10 +43,7 @@ const SatelliteData = () => {
 
   return (
     <div>
-      {/* Include the Header */}
       <Header />
-
-      {/* Main Content */}
       <div className="container" style={{ paddingTop: "60px" }}>
         <h1>Satellite Data Analysis</h1>
         <p>Analyze satellite data for crop health monitoring.</p>
@@ -129,20 +131,48 @@ const SatelliteData = () => {
         {/* Error Message */}
         {error && <p style={{ color: "red", marginTop: "10px", textAlign: "center" }}>{error}</p>}
 
-        {/* Recommendations */}
-        {recommendations.length > 0 && (
-          <div style={{ marginTop: "20px", textAlign: "left" }}>
-            <h2>Recommendations:</h2>
+        {/* NDVI Plot */}
+        {ndviPlot ? (
+          <div style={{ marginTop: "20px" }}>
+            <h2>NDVI Time Series with Anomalies</h2>
+            <img src={`data:image/png;base64,${ndviPlot}`} alt="NDVI Plot" style={{ width: "100%", height: "auto" }} />
+          </div>
+        ) : (
+          <p style={{ marginTop: "20px", textAlign: "center" }}>No NDVI plot available.</p>
+        )}
+
+        {/* Future Anomalies */}
+        {futureAnomalies.length > 0 ? (
+          <div style={{ marginTop: "20px" }}>
+            <h2>Predicted Future Anomalies</h2>
             <ul style={{ listStyleType: "none", paddingLeft: "0" }}>
-              {recommendations.map((rec, index) => (
-                <li key={index} style={{ marginBottom: "10px" }}>
-                  <strong>Type:</strong> {rec.type}<br />
-                  <strong>Location:</strong> Latitude={rec.latitude}, Longitude={rec.longitude}<br />
-                  <strong>Recommendation:</strong> {rec.recommendation}
+              {futureAnomalies.map((date, index) => (
+                <li key={index}>
+                  <strong>Date:</strong> {date}
                 </li>
               ))}
             </ul>
           </div>
+        ) : (
+          <p style={{ marginTop: "20px", textAlign: "center" }}>No future anomalies predicted.</p>
+        )}
+
+        {/* Recommendations */}
+        {recommendations.length > 0 ? (
+          <div style={{ marginTop: "20px" }}>
+            <h2>Recommendations</h2>
+            <ul style={{ listStyleType: "none", paddingLeft: "0" }}>
+              {recommendations.map((rec, index) => (
+                <li key={index}>
+                  <strong>Type:</strong> {rec.type} <br />
+                  <strong>Latitude:</strong> {rec.latitude}, <strong>Longitude:</strong> {rec.longitude} <br />
+                  <strong>Action:</strong> {rec.recommendation}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p style={{ marginTop: "20px", textAlign: "center" }}>No recommendations available.</p>
         )}
       </div>
     </div>
