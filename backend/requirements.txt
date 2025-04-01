@@ -10,7 +10,6 @@ gunicorn
 tweepy
 tensorflow
 geemap
-pickle
 datetime
 requests
 pillow
