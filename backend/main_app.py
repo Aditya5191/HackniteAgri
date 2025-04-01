@@ -1,7 +1,7 @@
 from iot import get_iot_data
 from cd import analyze_crop_disease
 from cb import chatbot
-from sat import analyze_satellite_logic
+# from sat import analyze_satellite_logic
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -61,16 +61,16 @@ def handle_chat():
 
 # Route for Satellite Data Analysis
 @app.route('/api/analyze-satellite', methods=['POST'])
-def analyze_satellite():
-    try:
-        # Parse the JSON payload from the frontend
-        data = request.json
-        result = analyze_satellite_logic(data)
-        # Return the response as JSON
-        return jsonify(result), 200
-    except Exception as e:
-        # Handle unexpected errors gracefully
-        return jsonify({"error": str(e)}), 500
+# def analyze_satellite():
+#     try:
+#         # Parse the JSON payload from the frontend
+#         data = request.json
+#         result = analyze_satellite_logic(data)
+#         # Return the response as JSON
+#         return jsonify(result), 200
+#     except Exception as e:
+#         # Handle unexpected errors gracefully
+#         return jsonify({"error": str(e)}), 500
 
 # Run the Flask app
 if __name__ == '__main__':
