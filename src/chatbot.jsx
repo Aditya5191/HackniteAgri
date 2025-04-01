@@ -19,7 +19,7 @@ const Chatbot = () => {
       setLoading(true);
 
       // Send the message to the backend (replace with your API endpoint)
-      const response = await fetch("http://localhost:8080/chat", {
+      const response = await fetch("http://localhost:5000/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),

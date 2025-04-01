@@ -1,21 +1,12 @@
-from flask import Flask, request, jsonify
-from werkzeug.utils import secure_filename
 import os
 from PIL import Image
 import numpy as np
 import tensorflow as tf
-from flask_cors import CORS  # Import CORS for enabling Cross-Origin Resource Sharing
 
 # Configure upload folder and allowed extensions
 UPLOAD_FOLDER = 'uploads'
 MODEL_DIR = 'crop_disease_models'  # Directory containing .tflite models
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Enable CORS for all routes
-CORS(app)
 
 # Helper function to check allowed file extensions
 def allowed_file(filename):
@@ -29,46 +20,26 @@ def preprocess_image(image_path, target_size=(224, 224)):
     img_array = np.expand_dims(img_array, axis=0).astype(np.float32)  # Add batch dimension
     return img_array
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    # Log the incoming request
-    print("Incoming request:", request)
-
-    # Check if the POST request contains a file
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
-
-    file = request.files['file']
-
-    # Validate file
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-    if not allowed_file(file.filename):
-        return jsonify({"error": "Invalid file type"}), 400
-
-    # Get the crop type from the form data
-    crop_type = request.form.get('cropType')
-    if not crop_type:
-        return jsonify({"error": "Crop type is required"}), 400
-
-    # Construct the path to the model file
-    model_filename = f"{crop_type.lower()}.tflite"
-    MODEL_PATH = os.path.join(MODEL_DIR, model_filename)
-
-    # Save the uploaded file
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    filename = secure_filename(file.filename)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
-
+# Main function to analyze crop disease
+def analyze_crop_disease(file, crop_type):
     try:
-        # Debug logs for the model file
-        print(f"Looking for model at: {MODEL_PATH}")
+        # Validate file
+        if not allowed_file(file.filename):
+            raise ValueError("Invalid file type")
+
+        # Construct the path to the model file
+        model_filename = f"{crop_type.lower()}.tflite"
+        MODEL_PATH = os.path.join(MODEL_DIR, model_filename)
+
+        # Ensure the upload folder exists
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+        filename = file.filename
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(file_path)
+
+        # Check if the model file exists
         if not os.path.exists(MODEL_PATH):
-            print(f"Error: Model file not found for crop type '{crop_type}'.")
-            return jsonify({"error": f"Model file not found for crop type '{crop_type}'."}), 400
-        else:
-            print("Model file found.")
+            raise FileNotFoundError(f"Model file not found for crop type '{crop_type}'.")
 
         # Load the TensorFlow Lite model (disable XNNPACK)
         interpreter = tf.lite.Interpreter(
@@ -76,7 +47,6 @@ def analyze():
             experimental_delegates=None,  # Disable XNNPACK
         )
         interpreter.allocate_tensors()
-        print("Model loaded successfully.")
 
         # Get input and output details
         input_details = interpreter.get_input_details()
@@ -120,14 +90,11 @@ def analyze():
         os.remove(file_path)
 
         # Return the results
-        return jsonify({
+        return {
             "disease": predicted_disease,
             "confidence": round(confidence, 2),
             "recommendation": recommendation,
-        })
+        }
 
     except Exception as e:
-        return jsonify({"error": f"Error during analysis: {str(e)}"}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+        raise Exception(f"Error during analysis: {str(e)}")

@@ -1,12 +1,7 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
 import numpy as np
-import time
 from datetime import datetime
 import pickle
-
-app = Flask(__name__)
-CORS(app)  # Enable Cross-Origin Resource Sharing for React frontend
+import os
 
 # Initial state variables (starting from 2004)
 current_year = 2004
@@ -17,13 +12,18 @@ temp_increase_per_year = 0.02  # Small temperature increase each year
 rainfall_variability = 0.97  # Slight decrease in rainfall over years
 
 # Load the pipeline and models
-with open('num_pipeline.pkl', 'rb') as f:
+num_pipeline_path = os.path.join('models', 'num_pipeline.pkl')
+trained_model_1_path = os.path.join('models', 'trained_model_1.pkl')
+trained_model_2_path = os.path.join('models', 'trained_model_2.pkl')
+
+# Load the pipeline and models
+with open(num_pipeline_path, 'rb') as f:
     pipeline = pickle.load(f)
 
-with open('trained_model_1.pkl', 'rb') as f:
+with open(trained_model_1_path, 'rb') as f:
     water_model = pickle.load(f)
 
-with open('trained_model_2.pkl', 'rb') as f:
+with open(trained_model_2_path, 'rb') as f:
     fertilizer_model = pickle.load(f)
 
 # Function to simulate realistic IoT sensor data
@@ -66,8 +66,7 @@ def generate_sensor_data():
         "Timestamp": timestamp
     }
 
-# API Endpoint to Simulate Live IoT Data
-@app.route('/iot-data', methods=['GET'])
+# Function to get IoT data with predictions
 def get_iot_data():
     sensor_data = generate_sensor_data()
 
@@ -95,7 +94,4 @@ def get_iot_data():
     sensor_data["Water_Needed_liters_ha_day"] = water_needed
     sensor_data["Fertilizer_Needed_kg_ha"] = fertilizer_needed
 
-    return jsonify(sensor_data)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return sensor_data

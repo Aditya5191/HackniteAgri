@@ -45,7 +45,7 @@ const CropDiseaseManagement = () => {
       formData.append("cropType", cropType); // Append the crop type
 
       // Make a POST request to the backend API
-      const response = await fetch("http://localhost:8000/analyze", {
+      const response = await fetch("http://localhost:5000/api/analyze-crop-disease", {
         method: "POST",
         body: formData,
       });

@@ -1,5 +1,3 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 import ee
 import datetime
 import pandas as pd
@@ -17,9 +15,6 @@ except Exception as e:
     print(f"Error initializing Earth Engine: {e}")
     ee.Authenticate()
     ee.Initialize()
-
-app = Flask(__name__)
-CORS(app)
 
 # Function to get user-defined AOI
 def get_user_aoi(coords):
@@ -227,17 +222,15 @@ def plot_ndvi_graph(ndvi_df, future_df=None):
     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     return image_base64
 
-# API endpoint for analysis
-@app.route('/analyze-satellite', methods=['POST'])
-def analyze_satellite():
+# Main function for satellite analysis
+def analyze_satellite_logic(data):
     try:
-        data = request.json
         coords = data.get("coords", None)
         start_date = data.get("startDate", "2023-01-01")
         end_date = data.get("endDate", "2023-10-01")
 
         if not start_date or not end_date:
-            return jsonify({"error": "Start date and end date are required."}), 400
+            raise ValueError("Start date and end date are required.")
 
         aoi = get_user_aoi(coords)
 
@@ -260,14 +253,11 @@ def analyze_satellite():
         future_anomalies = future_df[future_df['anomaly']].index.strftime('%Y-%m-%d').tolist()
 
         # Return response
-        return jsonify({
+        return {
             "ndvi_plot": image_base64,
             "future_anomalies": future_anomalies,
             "recommendations": recommendations
-        })
+        }
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True, port=4000)
+        raise Exception(f"Error during satellite analysis: {str(e)}")

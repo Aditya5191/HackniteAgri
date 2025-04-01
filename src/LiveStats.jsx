@@ -15,7 +15,7 @@ const LiveStats = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get("http://localhost:5000/iot-data");
+        const response = await axios.get("http://localhost:5000/api/iot-data");
         const newData = {
           timestamp: response.data.Timestamp,
           soil_moisture: response.data.Soil_Moisture_pct,

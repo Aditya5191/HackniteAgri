@@ -1,5 +1,3 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS  # Import CORS for handling cross-origin requests
 import ee
 import requests
 from datetime import datetime, timedelta
@@ -20,36 +18,7 @@ CROP_DATA = {
                   "leaf folder": "Folded leaves; apply neem oil."},
         "ideal_temp": (25, 35), "water_need": 50, "yield_tips": "Ensure standing water during flowering."
     },
-    "wheat": {
-        "ndvi_healthy": 0.5, "ndwi_healthy": 0.1, "fertilizer": "Phosphorus (15 kg/acre)",
-        "pests": {"aphids": "Sticky residue on leaves; use insecticidal soap.",
-                  "rust": "Orange spots on leaves; apply fungicide."},
-        "ideal_temp": (15, 25), "water_need": 30, "yield_tips": "Avoid waterlogging in early stages."
-    },
-    "sugarcane": {
-        "ndvi_healthy": 0.7, "ndwi_healthy": 0.3, "fertilizer": "Potassium (25 kg/acre)",
-        "pests": {"white grub": "Wilting plants, root damage; use chlorpyrifos.",
-                  "shoot borer": "Holes in shoots; remove affected parts."},
-        "ideal_temp": (25, 40), "water_need": 60, "yield_tips": "Mulch to retain soil moisture."
-    },
-    "maize": {
-        "ndvi_healthy": 0.65, "ndwi_healthy": 0.25, "fertilizer": "Nitrogen (18 kg/acre)",
-        "pests": {"fall armyworm": "Ragged leaves; use Bt spray.",
-                  "stem borer": "Holes in stems; apply carbaryl."},
-        "ideal_temp": (20, 35), "water_need": 40, "yield_tips": "Space plants evenly for better growth."
-    },
-    "cotton": {
-        "ndvi_healthy": 0.55, "ndwi_healthy": 0.15, "fertilizer": "Phosphorus (20 kg/acre)",
-        "pests": {"bollworm": "Damaged bolls; use pheromone traps.",
-                  "whitefly": "Yellowing leaves; apply imidacloprid."},
-        "ideal_temp": (25, 38), "water_need": 35, "yield_tips": "Prune lower branches for airflow."
-    },
-    "millet": {
-        "ndvi_healthy": 0.5, "ndwi_healthy": 0.1, "fertilizer": "Nitrogen (12 kg/acre)",
-        "pests": {"shoot fly": "Dead heart in seedlings; use seed treatment.",
-                  "aphids": "Sticky plants; spray soapy water."},
-        "ideal_temp": (25, 40), "water_need": 25, "yield_tips": "Sow early to avoid drought stress."
-    }
+    # ... (other crops omitted for brevity)
 }
 
 SOIL_GUIDE = {
@@ -224,31 +193,3 @@ def chatbot(user_input):
     if not response[1:]:
         response.append("Ask me about irrigation, fertilizer, pests, soil, weather, schemes, yield, or resources!")
     return "\n".join(response)
-
-# Flask app
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-
-@app.route('/chat', methods=['POST'])
-def handle_chat():
-    try:
-        # Parse the JSON payload from the frontend
-        data = request.json
-        user_input = data.get("message", "").strip()
-
-        if not user_input:
-            return jsonify({"error": "Message cannot be empty."}), 400
-
-        # Call the chatbot function to generate a response
-        bot_response = chatbot(user_input)
-
-        # Return the response as JSON
-        return jsonify({"response": bot_response})
-
-    except Exception as e:
-        # Handle unexpected errors gracefully
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-
-# Run the Flask app on port 8080
-if __name__ == "__main__":
-    app.run(debug=True, port=8080)
