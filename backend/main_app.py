@@ -1,6 +1,6 @@
 from iot import get_iot_data
 from cd import analyze_crop_disease
-from cb import chatbot
+# from cb import chatbot
 # from sat import analyze_satellite_logic
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -43,21 +43,21 @@ def iot_data():
         return jsonify({"error": str(e)}), 500
 
 # Route for Chatbot Handling
-@app.route('/api/chat', methods=['POST'])
-def handle_chat():
-    try:
-        # Parse the JSON payload from the frontend
-        data = request.json
-        user_input = data.get("message", "").strip()
-        if not user_input:
-            return jsonify({"error": "Message cannot be empty."}), 400
-        # Call the chatbot function to generate a response
-        bot_response = chatbot(user_input)
-        # Return the response as JSON
-        return jsonify({"response": bot_response}), 200
-    except Exception as e:
-        # Handle unexpected errors gracefully
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+# @app.route('/api/chat', methods=['POST'])
+# def handle_chat():
+#     try:
+#         # Parse the JSON payload from the frontend
+#         data = request.json
+#         user_input = data.get("message", "").strip()
+#         if not user_input:
+#             return jsonify({"error": "Message cannot be empty."}), 400
+#         # Call the chatbot function to generate a response
+#         bot_response = chatbot(user_input)
+#         # Return the response as JSON
+#         return jsonify({"response": bot_response}), 200
+#     except Exception as e:
+#         # Handle unexpected errors gracefully
+#         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 # Route for Satellite Data Analysis
 @app.route('/api/analyze-satellite', methods=['POST'])
