@@ -50,7 +50,7 @@ const Chatbot = () => {
       {/* Circular Button (when collapsed) */}
       {!isExpanded && (
         <button onClick={() => setIsExpanded(true)} style={styles.circularButton}>
-          <img src="public\logo.png" alt="Chatbot Logo" style={styles.logo} />
+          <img src="..\public\logo.png" alt="Chatbot Logo" style={styles.logo} />
         </button>
       )}
 
